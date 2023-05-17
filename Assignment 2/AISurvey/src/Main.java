@@ -1,8 +1,8 @@
 // CS311: Artificial Intelligence - Assignment 2: AI Survey Program
-// by Richard Galvez - Completed 
+// by Richard Galvez - Completed 5/17/2023
 /* 
 FOR ASSIGNMENT GRADER: Provided as .txt file with all notes/comments. Please rename the file to Main.java to compile
-and use with other files in folder (text file) to run. If other format needed, please specify.
+and use with other files in folder (text files) to run. If other format needed, please specify.
 */
 
 /*
@@ -49,10 +49,13 @@ faster and more accurately it will guess the user's political party affiliation.
  */
 
 import java.util.*;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Create 2D array for 6 multiple-choice survey questions
         String[][] surveyQuestions = {
             {"1: What is your sentiment toward firearms/gun control?\n",
@@ -62,7 +65,7 @@ public class Main {
             "D. There should be more restrictions on the current sale process.\n"},
             {"2: What should the government's role be in addressing poverty?\n",
             "A. Limited government intervention, with a focus on creating an environment that nurtures economic growth.\n",
-            "B. Government need to actively address  poverty and inequality, including expanding the social safety net.\n",
+            "B. Government need to actively address poverty and inequality, including expanding the social safety net.\n",
             "C. Limited government intervention, with a focus on allowing free markets to operate without excessive regulations.\n",
             "D. A focus on social and environmental justice measures, including sustainable economic development and expanding public services.\n"},
             {"3: What should be the government's approach to the current immigration crisis?\n",
@@ -95,12 +98,14 @@ public class Main {
         int democratScore = 0;
         int libertarianScore = 0;
         int greenScore = 0;
-
-        // Prompt user to answer survey questions, declare boolean for loop, initialize scanner for input
+        // Prompt user to answer survey questions, declare boolean for loop, initialize scanner for input, declare String for user's response input
         boolean surveyComplete = false;
         Scanner userScan = new Scanner(System.in);
+        String userResponse = "";
+        // LinkedHashMap for answer + question storage and to have it in ascending order
+        Map<String, String> questionAndChoice = new LinkedHashMap<>();
         // Welcome message
-        System.out.println("===== Welcome to the Political Survey! We will use AI to try to guess your political party! =====\n");
+        System.out.println("===== Welcome to the Political Survey! Let's see if we can guess your political party! =====\n");
         // Begin loop for survey, questions will come as the user inputs an answer to make it easier to read and understand the questions
         while(!surveyComplete) {
             for(int i = 0; i < surveyQuestions.length; i++) {
@@ -110,55 +115,72 @@ public class Main {
                     String answer = surveyQuestions[i][j];
                     System.out.print(answer);
                 }
-            // Gather user's response from the multiple choice options, able to be typed in different way, and store their answers in the 2D array to be written later on 
-            String userResponse = userScan.nextLine();
-            if((userResponse.equalsIgnoreCase("A")) || userResponse.equalsIgnoreCase("A.")) {
-                republicanScore += questionValues[i];
-                userResponse = surveyQuestions[i][1];
-                System.out.println("User selected: " + surveyQuestions[i][1]);
+            // Gather user's response from the multiple choice options, able to be typed in different way like ignoring case sensitivity
+            userResponse = userScan.nextLine().trim().toUpperCase();
+            if (userResponse.matches("[A-Da-d](\\.)?")) {
+                // Process the user's response to make sure it is valid
+                if (userResponse.equalsIgnoreCase("A") || userResponse.equalsIgnoreCase("A.")) {
+                    republicanScore += questionValues[i];
+                    userResponse = surveyQuestions[i][1];
+                    System.out.println("User selected: " + surveyQuestions[i][1]);
+                } else if (userResponse.equalsIgnoreCase("B") || userResponse.equalsIgnoreCase("B.")) {
+                    democratScore += questionValues[i];
+                    userResponse = surveyQuestions[i][2];
+                    System.out.println("User selected: " + surveyQuestions[i][2]);
+                } else if (userResponse.equalsIgnoreCase("C") || userResponse.equalsIgnoreCase("C.")) {
+                    libertarianScore += questionValues[i];
+                    userResponse = surveyQuestions[i][3];
+                    System.out.println("User selected: " + surveyQuestions[i][3]);
+                } else if (userResponse.equalsIgnoreCase("D") || userResponse.equalsIgnoreCase("D.")) {
+                    greenScore += questionValues[i];
+                    userResponse = surveyQuestions[i][4];
+                    System.out.println("User selected: " + surveyQuestions[i][4]);
             }
-            else if((userResponse.equalsIgnoreCase("B")) || userResponse.equalsIgnoreCase("B.")){
-                democratScore += questionValues[i];
-                userResponse = surveyQuestions[i][1];
-                System.out.println("User selected: " + surveyQuestions[i][2]);
-            }
-            else if((userResponse.equalsIgnoreCase("C")) || userResponse.equalsIgnoreCase("C.")){
-                libertarianScore += questionValues[i];
-                userResponse = surveyQuestions[i][1];
-                System.out.println("User selected: " + surveyQuestions[i][3]);
-            }
-            else if((userResponse.equalsIgnoreCase("D")) || userResponse.equalsIgnoreCase("D.")){
-                greenScore += questionValues[i];
-                userResponse = surveyQuestions[i][1];
-                System.out.println("User selected: " + surveyQuestions[i][4]);
-            }
-            // If user enters an invalid answer, it will ask the question again by subtracting 1 from i to repeat
-            else {
-                System.out.println("That is not a valid answer, please enter the letter from the multiple choice selection.");
-                i--;
-            }
+            // Store questions and selected answers to the LinkedHashMap
+            int selectedQuestionIndex = i;
+            String selectedQuestion = surveyQuestions[selectedQuestionIndex][0];
+            String selectedChoice = surveyQuestions[selectedQuestionIndex][userResponse.charAt(0) - 'A' + 1];
+            questionAndChoice.put(selectedQuestion, selectedChoice);
             surveyComplete = true;
+            // If user does not provide a valid answer, it will repeat the question so the user can enter a valid choice
+            } else {
+            System.out.println("That is not a valid answer, please enter the letter from the multiple choice selection.\n");
+            i--;
+            }
         }
         // Create HashMap to link score results to the party's name to help print out the winner once score is tallied up
         Map<Integer, String> partyResult = new HashMap<>();
-        partyResult.put(republicanScore, "Republican Party");
-        partyResult.put(democratScore, "Democrat Party");
-        partyResult.put(libertarianScore, "Libertarian Party");
-        partyResult.put(greenScore, "Green Party");
-        // Assign int value to capture the final score of the party with the most points scored using Math.max
+        partyResult.put(republicanScore, "Republican-Party");
+        partyResult.put(democratScore, "Democrat-Party");
+        partyResult.put(libertarianScore, "Libertarian-Party");
+        partyResult.put(greenScore, "Green-Party");
+        // Assign int value to capture the final score of the party with the most points scored using Math.max, assign the value to a String
         int partyWinner = Math.max(Math.max(republicanScore,democratScore),Math.max(libertarianScore,greenScore));
-
+        String winningPartyName = partyResult.get(partyWinner);
         // Print out final answer that determines which party the user is affiliated with
-        System.out.println("Based on your answers, you are most likely affiliated with the " + partyResult.get(partyWinner) + "!\n");
-        // Print out score totals - TESTING only
+        System.out.println("Based on your answers, you are most likely affiliated with the " + winningPartyName + "!\n");
+        // Print out score end totals for extra information
         System.out.println("Score for Republican Party is " + republicanScore + ".");
         System.out.println("Score for Democrat Party is " + democratScore + ".");
         System.out.println("Score for Libertarian Party is " + libertarianScore + ".");
-        System.out.println("Score Green Party is " + greenScore + ".");
+        System.out.println("Score for Green Party is " + greenScore + ".");
+        // Save each set of responses in its own text file. Make a file and file writer for each party, whichever party has the highest score will have the responses saved in that text file
+        File outputFile = new File(winningPartyName + ".txt");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+            // Write responses to the winner's text file
+            for(Map.Entry<String, String> entry : questionAndChoice.entrySet()){
+                String selectedQuestion = entry.getKey();
+                String selectedChoice = entry.getValue();
 
-        // Save each set of responses in its own text file. Make a file and file writer for each party. 
-        // Whichever party has the highest score will have the responses saved in that text file.
-    
+                writer.write(selectedQuestion);
+                writer.write(selectedChoice);
+                writer.newLine();;
+            }
+            // Flush and close writer to write data successfully, catch if error
+            writer.flush();
+        } catch (IOException e) {
+            System.out.println("Error occured while writing to the file: " + e.getMessage());
+        }
         }
     }
 }
