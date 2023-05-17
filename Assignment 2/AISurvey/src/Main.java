@@ -53,7 +53,7 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Create 2D array for 5 multiple-choice survey questions, store them in [i][0]
+        // Create 2D array for 6 multiple-choice survey questions
         String[][] surveyQuestions = {
             {"1: What is your sentiment toward firearms/gun control?\n",
             "A. While recent events are tragic, they are not the root issue. Gun laws are strict enough and we should loosen some areas.\n",
@@ -88,11 +88,9 @@ public class Main {
             "D. Green Party\n",
             }
         };
-        // Create variables to help represent each of the 4 parties in the survey, String for label and int for scorekeeping
-        String republican;
-        String democrat;
-        String libertarian;
-        String green;
+        // Assign each question a specific point value; the order of this array is based on the order of the questions
+        int[] questionValues = {5, 2, 5, 3, 4, 8};
+        // Create variables to help represent each of the 4 parties in the survey, using int for scorekeeping
         int republicanScore = 0;
         int democratScore = 0;
         int libertarianScore = 0;
@@ -101,7 +99,9 @@ public class Main {
         // Prompt user to answer survey questions, declare boolean for loop, initialize scanner for input
         boolean surveyComplete = false;
         Scanner userScan = new Scanner(System.in);
-
+        // Welcome message
+        System.out.println("===== Welcome to the Political Survey! We will use AI to try to guess your political party! =====\n");
+        // Begin loop for survey, questions will come as the user inputs an answer to make it easier to read and understand the questions
         while(!surveyComplete) {
             for(int i = 0; i < surveyQuestions.length; i++) {
                 String question = surveyQuestions[i][0];
@@ -110,38 +110,55 @@ public class Main {
                     String answer = surveyQuestions[i][j];
                     System.out.print(answer);
                 }
-            // Gather user's response from the multiple choice options, able to be typed in different ways
+            // Gather user's response from the multiple choice options, able to be typed in different way, and store their answers in the 2D array to be written later on 
             String userResponse = userScan.nextLine();
             if((userResponse.equalsIgnoreCase("A")) || userResponse.equalsIgnoreCase("A.")) {
-                republicanScore++;
+                republicanScore += questionValues[i];
+                userResponse = surveyQuestions[i][1];
+                System.out.println("User selected: " + surveyQuestions[i][1]);
             }
             else if((userResponse.equalsIgnoreCase("B")) || userResponse.equalsIgnoreCase("B.")){
-                democratScore++;
+                democratScore += questionValues[i];
+                userResponse = surveyQuestions[i][1];
+                System.out.println("User selected: " + surveyQuestions[i][2]);
             }
             else if((userResponse.equalsIgnoreCase("C")) || userResponse.equalsIgnoreCase("C.")){
-                libertarianScore++;
+                libertarianScore += questionValues[i];
+                userResponse = surveyQuestions[i][1];
+                System.out.println("User selected: " + surveyQuestions[i][3]);
             }
             else if((userResponse.equalsIgnoreCase("D")) || userResponse.equalsIgnoreCase("D.")){
-                greenScore++;
+                greenScore += questionValues[i];
+                userResponse = surveyQuestions[i][1];
+                System.out.println("User selected: " + surveyQuestions[i][4]);
             }
-            // If user enters an invalid answer, it will ask the question again
+            // If user enters an invalid answer, it will ask the question again by subtracting 1 from i to repeat
             else {
                 System.out.println("That is not a valid answer, please enter the letter from the multiple choice selection.");
                 i--;
             }
             surveyComplete = true;
         }
+        // Create HashMap to link score results to the party's name to help print out the winner once score is tallied up
+        Map<Integer, String> partyResult = new HashMap<>();
+        partyResult.put(republicanScore, "Republican Party");
+        partyResult.put(democratScore, "Democrat Party");
+        partyResult.put(libertarianScore, "Libertarian Party");
+        partyResult.put(greenScore, "Green Party");
+        // Assign int value to capture the final score of the party with the most points scored using Math.max
+        int partyWinner = Math.max(Math.max(republicanScore,democratScore),Math.max(libertarianScore,greenScore));
+
+        // Print out final answer that determines which party the user is affiliated with
+        System.out.println("Based on your answers, you are most likely affiliated with the " + partyResult.get(partyWinner) + "!\n");
+        // Print out score totals - TESTING only
         System.out.println("Score for Republican Party is " + republicanScore + ".");
         System.out.println("Score for Democrat Party is " + democratScore + ".");
         System.out.println("Score for Libertarian Party is " + libertarianScore + ".");
         System.out.println("Score Green Party is " + greenScore + ".");
 
-        // Whichever party (int) has the most points, write out to partyresult.txt
-
-        // Store their answers in [i][1], set question 
-
-        // Answers to questions weigh differently
-
+        // Save each set of responses in its own text file. Make a file and file writer for each party. 
+        // Whichever party has the highest score will have the responses saved in that text file.
+    
         }
     }
 }
