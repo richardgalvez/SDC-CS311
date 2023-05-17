@@ -1,0 +1,5 @@
+Hello|Hello
+Hi|Hello
+What are you doing|Just chilling here
+Are you Bobby?|Why, yes, I am!
+How are you today|Awesome!
