@@ -1,0 +1,69 @@
+#Create variable for each party#
+String Democrat, republican, libertarian, Green
+
+#Prompt user to answer multiple choice questions#
+#A for Democrat, B for Dem, C for Libert, D for green
+
+#Place 5-10  questions in 2D array (example below)#
+{"What should the government go about taxation?\n",
+"A. Reduce taxes, the government already takes too much money away from hard working individuals.\n" +
+"B. Increase taxes for the wealthy.\n" +
+"C. Taxation should be based on carbon footprint.\n" +
+"D. Stay out of it, the government has caused enough damage already."},
+
+What should the government's role be in addressing poverty?
+A. Limited government intervention, with a focus on creating an environment that nurtures economic growth.
+B. Government need to actively address  poverty and inequality, including expanding the social safety net.
+C. Limited government intervention, with a focus on allowing free markets to operate without excessive regulations.
+D. A focus on social and environmental justice measures, including sustainable economic development and expanding public services.
+
+What should be the government's approach to the current immigration crisis?
+A. We need stronger border security measures, increased funding for border enforcement, and stricter laws.
+B. Reforming immigration, give a pathway to citizenship for undocumented immigrants, and help address root causes of migration.
+C. Less government intervention, reduce restrictions on legal immigration and allow free movement of people.
+D. Humanitarian-focused approach, address root causes, provide legal pathways for immigrants, and pro..
+
+How should the government approach foreign aid?
+A. Use it as a tool for advancing national interests and promoting stability in strategic regions.
+B. Use it to help address global poverty, promote development and goodwill towards the United States.
+C. Minimize/eliminate foreign aid. Private and voluntary organizations can lead in providing assistance.
+D. Prioritize sustainable development and provide foreign aid based on principles of equity and justice.
+
+What is your opinion on abortion?
+A. Generally oppose abortion and support restrictions, state can decide, and with limited exceptions for serious cases.
+B. Generally support a woman's right to choose and access to safe and legal abortion, with  women's health and safety in mind.
+C. Support personal freedom and limited government involvement, individual should have the right to choose or the right to life.
+D. Generally support a woman's right to choose and access to comprehensive reproductive healthcare, prioritize measures to reduce unintended pregnancies.
+
+What is your sentiment toward firearms/gun control? 
+A. Gun laws are strict enough, we should loosen some areas.
+B. We should ban the sale of guns entirely.
+C. Everyone has the right to arm themselves for self defense.
+D. There should be more restrictions on the current sale process.
+
+
+#Used IO packages, some of which could be like java.io.BufferedWriter / java.io.FileWriter /java.io.PrintStream / java.util.*#
+
+#Create a separate 2d array string of questions[][], storing the answer in [i] [1] after getting user input for each question. [i][0] held the question itself.#
+
+#Iterate over questions[][] with a for loop, setting questions[i][1] to the response from:# 
+String (response) = scanner.nextLine();
+
+#Make switch/case schema to evaluate the value of the responses. Whichever case it was, it incremented a corresponding party int (4, one int per each party).#
+int Dem
+if question == true{
+Dem++
+}
+
+#Using a series of if else statements, compare the values of each of the 4 party ints to each other.
+
+#Whichever partyname int was the highest, write  out to (partyname).txt the contents of the array using BufferedWriter and the name of the file with FileWriter. Then prompt the user to input what their actual party was, which can be written out to the same file.#
+
+#Arrays.deepToString is an easy way to change that 2d array to a String so that it can be used with the write function.#
+
+#Trying to implement error catching logic:
+Print the first question,
+if the answer is not valid:
+do not print the next question + answer, repeat the question
+
+#save each set of responses in its own text file. Make a file and file writer for each party. whichever party has the highest score will have the responses saved in that text file.#
